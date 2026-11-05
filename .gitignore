@@ -1,0 +1,32 @@
+# OpenFOAM solver output directories (ignores numerical time steps, preserves 0/ and 0.orig/)
+[1-9]*
+0.*[1-9]*
+-[0-9]*
+
+# Parallel processing decomposition directories
+processor*
+
+# Logs and runtime dumps
+log.*
+*.log
+PyFoam*
+*.out
+*.err
+
+# ParaView and visualization dumps
+postProcessing/
+VTK/
+*.foam
+*.vtk
+
+# Python & Jupyter cache
+__pycache__/
+*.py[cod]
+*$py.class
+.ipynb_checkpoints/
+
+# System / Editor temporary files
+.DS_Store
+Thumbs.db
+*.swp
+*~
