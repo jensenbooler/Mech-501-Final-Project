@@ -158,13 +158,16 @@ def write_geo(filename, airfoil_code="0012", scale=1.0):
         f.write("  Recombine;\n")
         f.write("};\n\n")
 
+        # Merge duplicate interface surfaces along Line 3 (inflow) and Line 7 (wake)
+        f.write("// Remove duplicate internal interface surfaces\n")
+        f.write("Coherence;\n\n")
+
         # 12. OpenFOAM Physical Patches
         f.write("Physical Volume(\"internalMesh\") = {out1[1], out2[1]};\n")
         f.write("Physical Surface(\"inlet\") = {out1[3], out1[4], out2[3], out2[4]};\n")
         f.write("Physical Surface(\"outlet\") = {out1[5], out2[5]};\n")
         f.write("Physical Surface(\"airfoil\") = {out1[7], out2[7]};\n")
         f.write("Physical Surface(\"frontAndBack\") = {1, 2, out1[0], out2[0]};\n")
-
     print(f"Generated structured {filename} (scale={scale}, airfoil={airfoil_code})")
 
 if __name__ == "__main__":
