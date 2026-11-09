@@ -34,3 +34,6 @@ Thumbs.db
 # Mesh and geometry caches
 *.msh
 *.geo
+
+# OpenFOAM runtime cases
+runs/
