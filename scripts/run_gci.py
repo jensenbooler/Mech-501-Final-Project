@@ -30,4 +30,4 @@ def run_gci(name, phi1, phi2, phi3, r=np.sqrt(2)):
 
 if __name__ == "__main__":
     run_gci("Lift Coefficient (Cl)", phi1=0.403262, phi2=0.391010, phi3=0.395056)
-    run_gci("Drag Coefficient (Cd)", phi1=0.027000, phi2=0.033300, phi3=0.041000)
+    run_gci("Drag Coefficient (Cd)", phi1=0.026992, phi2=0.033308, phi3=0.040999)
