@@ -2,13 +2,15 @@
 Parametric Structured C-Grid Generator for NACA 0012 / NACA 2412 Airfoils.
 Generates pure hexahedral (quad-extruded) C-grids compatible with gmshToFoam.
 Grid levels:
-  h3 (Coarse):  scale = 1.0   (~30,500 hex cells)
-  h2 (Medium):  scale = 1.414 (~61,500 hex cells)
-  h1 (Fine):    scale = 2.0   (~123,500 hex cells)
+  h3 (Coarse):        scale = 1.0   (~30,500 hex cells)
+  h2 (Medium):        scale = 1.414 (~61,500 hex cells)
+  h1 (Fine):          scale = 2.0   (~123,500 hex cells)
+  wf (Wall Function): scale = 1.414 (~16,300 hex cells, 30 <= y+ <= 60)
 """
 
 import sys
 import numpy as np
+
 
 def naca4_coordinates(code="0012", n_points=120, chord=1.0):
     m = float(code[0]) / 100.0
@@ -52,11 +54,12 @@ def naca4_coordinates(code="0012", n_points=120, chord=1.0):
 
     return x_upper, y_upper, x_lower, y_lower
 
-def write_geo(filename, airfoil_code="0012", scale=1.0):
+
+def write_geo(filename, airfoil_code="0012", scale=1.0, wall_function=False):
     c = 1.0
     R = 20.0 * c          # Upstream and lateral radius (20c)
     L_wake = 25.0 * c     # Downstream wake distance (25c)
-    span_z = 0.01 * c    # 1-cell extrusion in Z (5 mm eliminates 3D aspect ratio artifact)
+    span_z = 0.01 * c     # 1-cell extrusion in Z
 
     # Structured grid dimensioning
     N_foil = int(round(80 * scale))      # Nodes along airfoil
@@ -67,6 +70,14 @@ def write_geo(filename, airfoil_code="0012", scale=1.0):
     prog_normal = 1.0 + (0.095 / scale)
     prog_wake = 1.0 + (0.045 / scale)
     prog_outlet = 1.0 + (0.025 / scale)
+
+    if wall_function:
+        # Calibrated for 30 <= y+ <= 60 (yp ≈ 2.0e-4 m, mean y+ ≈ 48)
+        N_foil = 110
+        N_wake = 55
+        N_normal = 75
+        prog_normal = 1.125
+        prog_outlet = 1.060
 
     x_u, y_u, x_l, y_l = naca4_coordinates(airfoil_code, n_points=N_foil, chord=c)
 
@@ -168,10 +179,17 @@ def write_geo(filename, airfoil_code="0012", scale=1.0):
         f.write("Physical Surface(\"outlet\") = {out1[5], out2[5]};\n")
         f.write("Physical Surface(\"airfoil\") = {out1[7], out2[7]};\n")
         f.write("Physical Surface(\"frontAndBack\") = {1, 2, out1[0], out2[0]};\n")
-    print(f"Generated structured {filename} (scale={scale}, airfoil={airfoil_code})")
+
+    print(f"Generated structured {filename} (scale={scale}, airfoil={airfoil_code}, wf={wall_function})")
+
 
 if __name__ == "__main__":
     lvl = sys.argv[1] if len(sys.argv) > 1 else "h3"
     af = sys.argv[2] if len(sys.argv) > 2 else "0012"
-    scales = {"h3": 1.0, "h2": 1.414, "h1": 2.0}
-    write_geo(f"naca_{af}_{lvl}.geo", airfoil_code=af, scale=scales.get(lvl, 1.0))
+    scales = {"h3": 1.0, "h2": 1.414, "h1": 2.0, "wf": 1.414}
+    write_geo(
+        f"naca_{af}_{lvl}.geo",
+        airfoil_code=af,
+        scale=scales.get(lvl, 1.0),
+        wall_function=(lvl == "wf"),
+    )
