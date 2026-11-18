@@ -1,0 +1,9 @@
+FoamFile { version 2.0; format ascii; class volVectorField; object U; }
+dimensions [0 1 -1 0 0 0 0];
+internalField uniform (0.997564083 0.069756006 0);
+boundaryField {
+    inlet   { type fixedValue; value $internalField; }
+    outlet  { type inletOutlet; inletValue $internalField; value $internalField; }
+    airfoil { type noSlip; }
+    "(frontAndBack|defaultFaces)" { type empty; }
+}

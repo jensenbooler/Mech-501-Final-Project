@@ -1,0 +1,4 @@
+surfaces {
+    type surfaces; libs ("libsampling.so"); surfaceFormat raw; fields (p);
+    surfaces { airfoil { type patch; patches (airfoil); interpolate false; } }
+}
