@@ -20,9 +20,7 @@ plt.rcParams.update({
     "grid.linestyle": "--",
 })
 
-# ==============================================================================
-# PLOT 1: Phase 1 ASME V&V 20 Grid Convergence (Cl and Cd vs. Grid Spacing h/h1)
-# ==============================================================================
+# Plot 1: Phase 1 ASME V&V 20 Grid Convergence (Cl and Cd vs. Grid Spacing h/h1)
 def plot_phase1_gci():
     h_norm = np.array([1.0, np.sqrt(2), 2.0])  # h1, h2, h3
     labels = ["$h_1$ (Fine)\n123.5k", "$h_2$ (Med)\n61.6k", "$h_3$ (Coarse)\n30.5k"]
@@ -36,7 +34,7 @@ def plot_phase1_gci():
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 5.0))
 
-    # --- Panel A: Lift Coefficient (Oscillatory) ---
+    # Panel A: Lift Coefficient (Oscillatory)
     ax1.plot(h_norm, cl_vals, "o-", color="#1f77b4", linewidth=2.4, markersize=8.5, label="Simulated $C_l$")
     ax1.axhspan(cl_mean - delta_osc, cl_mean + delta_osc, color="#1f77b4", alpha=0.15,
                 label="Oscillatory Envelope ($\\pm 1.52\\%$)")
@@ -55,7 +53,7 @@ def plot_phase1_gci():
     ax1.set_ylim(0.382, 0.420)
     ax1.legend(loc="upper right", frameon=True, facecolor="white", framealpha=0.9)
 
-    # --- Panel B: Drag Coefficient (Monotonic) ---
+    # Panel B: Drag Coefficient (Monotonic)
     C_formal = (cd_vals[1] - cd_vals[0]) / (h_norm[1]**2 - h_norm[0]**2)
     h_smooth = np.linspace(0.0, 2.05, 100)
     cd_smooth = cd_ext_formal + C_formal * (h_smooth**2)
@@ -85,10 +83,7 @@ def plot_phase1_gci():
     plt.close()
     print("Saved plots/phase1_gci_convergence.png")
 
-
-# ==============================================================================
-# PLOT 2: Phase 2 Cost vs. Accuracy (Larger & Cleaner Visuals)
-# ==============================================================================
+# Plot 2: Phase 2 Cost vs. Accuracy
 def plot_phase2_cost_accuracy():
     cases = ["Case A\n$k$-$\\omega$ SST (WR)\n$y^+ = 0.93$",
              "Case B\nSpalart-Allmaras (WR)\n$y^+ = 0.24$",
@@ -103,7 +98,7 @@ def plot_phase2_cost_accuracy():
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(13.8, 5.8))
 
-    # --- Panel A: Computational Cost (Wall-Clock Minutes & Cell Count) ---
+    # Panel A: Computational Cost (Wall-Clock Minutes & Cell Count)
     bars = ax1.bar(x, clock_min, width=0.46, color=["#2b5c8f", "#4a89dc", "#2ca02c"],
                    edgecolor="black", linewidth=1.1, alpha=0.92)
     for bar, mins, cells in zip(bars, clock_min, cells_k):
@@ -122,7 +117,7 @@ def plot_phase2_cost_accuracy():
     ax1.set_xticklabels(cases)
     ax1.set_ylim(0, 38)
 
-    # --- Panel B: Aerodynamic Accuracy (Cl and Cd) ---
+    # Panel B: Aerodynamic Accuracy (Cl and Cd)
     ax2_twin = ax2.twinx()
     ax2_twin.grid(False)
 
@@ -161,10 +156,7 @@ def plot_phase2_cost_accuracy():
     plt.close()
     print("Saved plots/phase2_cost_vs_accuracy.png")
 
-
-# ==============================================================================
-# PLOT 3: Unified Camber Comparison (Cases A-E, Clean Without Callout Box)
-# ==============================================================================
+# Plot 3: Unified Camber Comparison (Cases A-E)
 def plot_phase2_camber_summary():
     cases = ["Case A\n0012 SST", "Case B\n0012 SA", "Case C\n0012 WF", "Case D\n2412 SST", "Case E\n2412 SA"]
     cl_vals = [0.4033, 0.4658, 0.4192, 0.6879, 0.7454]
@@ -174,7 +166,7 @@ def plot_phase2_camber_summary():
     x = np.arange(len(cases))
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.5, 4.8))
 
-    # --- Panel A: Lift Coefficient ---
+    # Panel A: Lift Coefficient
     bars1 = ax1.bar(x, cl_vals, width=0.52, color=colors, edgecolor="black", linewidth=1.1)
     for bar, val in zip(bars1, cl_vals):
         ax1.annotate(f"{val:.4f}", (bar.get_x() + bar.get_width() / 2, val + 0.015),
@@ -186,7 +178,7 @@ def plot_phase2_camber_summary():
     ax1.set_xticklabels(cases)
     ax1.set_ylim(0, 0.85)
 
-    # --- Panel B: Pitching Moment ---
+    # Panel B: Pitching Moment
     bars2 = ax2.bar(x, cm_vals, width=0.52, color=colors, edgecolor="black", linewidth=1.1)
     ax2.axhline(0, color="black", linewidth=1.1)
     for bar, val in zip(bars2, cm_vals):
