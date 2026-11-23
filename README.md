@@ -70,3 +70,20 @@ All runs were executed serially (`nProcs = 1`) in OpenFOAM v2412 on `cpupool1`:
 * **Turbulence Closure Sensitivity (SA vs. $k\text{-}\omega$ SST):** Spalart-Allmaras predicts stronger boundary-layer attachment near the trailing edge, yielding higher lift ($C_l = 0.4658$, closely matching NASA TMR/experimental benchmarks of $C_l \approx 0.44\text{--}0.46$) and substantially lower pressure drag ($C_d = 0.00432$). In contrast, $k\text{-}\omega$ SST predicts earlier adverse-pressure-gradient thickening near the trailing edge, reducing $C_l$ to $0.4033$ and increasing form drag.
 * **Wall-Function Accuracy & $y^+$ Distribution (Case C):** Using continuous wall-function blending (`omegaWallFunction` / `nutkWallFunction`), Case C achieves `Mean y+ = 47.10` across the airfoil, with local extremes of `Min y+ = 23.55` (near the low-shear stagnation and trailing-edge regions) and `Max y+ = 78.38` (at the leading-edge suction peak). Total drag decomposes into $C_{d,\text{pressure}} = 0.02194$ and $C_{d,\text{viscous}} = 0.00603$, closely tracking Case A's total drag ($+3.59\%$) and lift ($+3.96\%$).
 * **Cost-to-Fidelity Tradeoff:** Coarsening the wall-normal grid to the log-law regime reduces mesh size by **80.5%** (`123,504` $\rightarrow$ `24,124` cells) and cuts wall-clock runtime by **88.8%** (`1,785 s` $\rightarrow$ `199 s`, a **9.0x speedup**), demonstrating why wall-modeled RANS is preferred for rapid multi-angle polar sweeps before running targeted wall-resolved verification cases.
+
+## Phase 2 (Continued): Airfoil Camber Study (NACA 0012 vs. NACA 2412)
+
+To quantify the aerodynamic effect of 2% maximum camber at 40% chord, two additional $h_1$ simulations (`123,504` hex cells) were executed at identical flow conditions ($Re_c = 6.0 \times 10^6$, $\alpha = 4.0^\circ$, $A_{\text{ref}} = 0.01\text{ m}^2$), with surface pressure distributions exported to `plots/phase2_cp_comparison.png`:
+
+* **Case D (NACA 2412, $k\text{-}\omega$ SST):** Lift increases by **+70.6%** ($C_l = 0.6879$ vs. $0.4033$) while drag drops by **21.0%** ($C_d = 0.02131$), more than doubling aerodynamic efficiency ($L/D = 32.3$ vs. $14.9$) and introducing a nose-down pitching moment ($C_{m,\text{pitch}} = -0.05944$).
+* **Case E (NACA 2412, Spalart-Allmaras):** Warm-started from Case D ($t = 500$) and converged at $t = 2191$ (`residualControl < 1e-5`), yielding $C_l = 0.7454$ (**+60.0%** vs. Case B), $C_d = 0.00368$, and $C_{m,\text{pitch}} = -0.06385$.
+
+### Unified Phase 2 Aerodynamic Summary (Cases A–E)
+
+| Case | Airfoil | Turbulence Model | Near-Wall Treatment | Cells | Mean $y^+$ | $C_l$ | $C_d$ | $C_{m,\text{pitch}}$ | $L/D$ |
+| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Case A** | NACA 0012 | $k\text{-}\omega$ SST | Wall-Resolved ($y^+ \le 1$) | 123,504 | 0.93 | 0.4033 | 0.02699 | +0.00081 | 14.9 |
+| **Case B** | NACA 0012 | Spalart-Allmaras | Wall-Resolved ($y^+ \le 1$) | 123,504 | 0.244 | 0.4658 | 0.00432 | -0.00525 | 107.7 |
+| **Case C** | NACA 0012 | $k\text{-}\omega$ SST | Wall Functions ($30 \le y^+ \le 60$) | 24,124 | 47.10 | 0.4192 | 0.02796 | -0.00334 | 15.0 |
+| **Case D** | NACA 2412 | $k\text{-}\omega$ SST | Log-Law ($y^+ \approx 120$) | 123,504 | 119.85 | **0.6879** | **0.02131** | **-0.05944** | **32.3** |
+| **Case E** | NACA 2412 | Spalart-Allmaras | Unresolved Sublayer ($y^+ \approx 117$) | 123,504 | 116.55 | **0.7454** | **0.00368** | **-0.06385** | **202.6** |
