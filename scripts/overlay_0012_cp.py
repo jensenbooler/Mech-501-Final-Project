@@ -43,23 +43,25 @@ img = mpimg.imread(img_path).copy()
 h, w = img.shape[:2]
 gray = img[:, :, :3].mean(axis=2)
 
-# Find exact pixel row/column of the black top and right axes spines (avoiding the title region)
+# Find exact pixel row/column of the black top and right axes spines
 col_spine = int(0.95 * w) + np.argmin(gray[int(0.50 * h), int(0.95 * w) : int(0.99 * w)])
 row_top_spine = int(0.065 * h) + np.argmin(gray[int(0.065 * h) : int(0.105 * h), int(0.25 * w)])
 
 # Copy a clean 1-pixel-tall horizontal strip (with exact vertical grid lines) from y = 0.245*h over the old legend
 y_top = row_top_spine + 3
 y_bot = int(0.220 * h)
-x_left = int(0.550 * w)
-x_right = col_spine - 2  # stops cleanly inside the anti-aliased right black border
+x_left = int(0.545 * w)
+x_right = col_spine - 2
 clean_row = img[int(0.245 * h) : int(0.245 * h) + 1, x_left:x_right, :]
 img[y_top:y_bot, x_left:x_right, :] = clean_row
 
-# Restore the horizontal y = -1.5 grid line across that same x-range using its clean left segment
-row_m15 = int(0.12 * h) + np.argmin(gray[int(0.12 * h) : int(0.18 * h), int(0.30 * w)])
-img[row_m15 - 1 : row_m15 + 2, x_left:x_right, :] = img[
-    row_m15 - 1 : row_m15 + 2, int(0.30 * w) : int(0.30 * w) + (x_right - x_left), :
-]
+# Average across x = [0.22*w : 0.50*w] to lock onto the exact y = -1.5 horizontal grid line without vertical-grid noise
+band = gray[int(0.10 * h) : int(0.20 * h), int(0.22 * w) : int(0.50 * w)].mean(axis=1)
+row_m15 = int(0.10 * h) + np.argmin(band)
+
+# Tile a clean 1-pixel-wide horizontal grid sample from x = 0.30*w across the full masked legend span
+grid_patch = img[row_m15 - 1 : row_m15 + 2, int(0.30 * w) : int(0.30 * w) + 1, :]
+img[row_m15 - 1 : row_m15 + 2, x_left:x_right, :] = grid_patch
 
 fig = plt.figure(figsize=(w / 200, h / 200), dpi=200)
 ax_bg = fig.add_axes([0, 0, 1, 1])
