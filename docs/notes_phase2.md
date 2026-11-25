@@ -77,29 +77,12 @@
 
 ## Camber Study: NACA 2412 ($h_1$ Grid, $123,504$ Hex Cells)
 
-### Case D: NACA 2412 — $k\text{-}\omega$ SST
+### Case D: NACA 2412 — $k\text{-}\omega$ SST + Wall Functions (`nutkWallFunction`)
 - **Directory:** `runs/naca2412_sst_h1/` | **Tracked Setup:** `setup/naca2412/sst_h1/`
-- **Converged Metrics ($t = 3000$, $A_{\text{ref}} = 0.01\text{ m}^2$):**
-  - **$C_l$:** `0.6879` (**+70.6%** vs. Case A NACA 0012; $\Delta C_l = +0.2846$)
-  - **$C_d$:** `0.02131` (-21.0% vs. Case A; pressure: `0.00722`, viscous: `0.01410`)
-  - **$C_{m,\text{pitch}}$:** `-0.05944` ($\Delta C_m = -0.06025$ vs. Case A)
-  - **$L/D$:** `32.3` (vs. `14.9` for Case A)
-- **Wall Resolution:** Min $y^+ = 0.81$, Mean $y^+ = 119.85$, Max $y^+ = 155.13$ (log-law trailing-edge stretch handled via `omegaWallFunction`)
+- **Converged Metrics ($t = 4500$):** $C_l = 0.6568$ (+62.9% vs. Case A), $C_d = 0.02869$ ($C_{d,p} = 0.01106$, $C_{d,v} = 0.01763$), $C_{m,\text{pitch}} = -0.05459$, $L/D = 22.9$
+- **Wall Resolution ($t = 4500$):** Min $y^+ = 1.10$, Mean $y^+ = 563.12$, Max $y^+ = 864.26$
 
-### Case E: NACA 2412 — Spalart-Allmaras (Warm-Started from Case D $t = 500$)
+### Case E: NACA 2412 — Spalart-Allmaras + Wall Functions (`nutUSpaldingWallFunction`)
 - **Directory:** `runs/naca2412_sa_h1/` | **Tracked Setup:** `setup/naca2412/sa_h1/`
-- **Converged Metrics ($t = 2191$, early convergence at `residualControl < 1e-5`):**
-  - **$C_l$:** `0.7454` (**+60.0%** vs. Case B NACA 0012; $\Delta C_l = +0.2796$)
-  - **$C_d$:** `0.00368` (pressure: `-0.00189`, viscous: `0.00557`)
-  - **$C_{m,\text{pitch}}$:** `-0.06385` ($\Delta C_m = -0.05860$ vs. Case B)
-  - **$L/D$:** `202.6` (vs. `107.7` for Case B)
-- **Wall Resolution:** Min $y^+ = 2.60$, Mean $y^+ = 116.55$, Max $y^+ = 151.59$
-
-### Phase 2 Complete Comparison Matrix (Cases A–E)
-| Case | Airfoil | Turbulence Model | Near-Wall Treatment | Cells | $C_l$ | $C_d$ | $C_{m,\text{pitch}}$ | $L/D$ |
-| :---: | :---: | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Case A** | NACA 0012 | $k\text{-}\omega$ SST | Wall-Resolved ($y^+ \le 1$) | 123,504 | 0.4033 | 0.02699 | +0.00081 | 14.9 |
-| **Case B** | NACA 0012 | Spalart-Allmaras | Wall-Resolved ($y^+ \le 1$) | 123,504 | 0.4658 | 0.00432 | -0.00525 | 107.7 |
-| **Case C** | NACA 0012 | $k\text{-}\omega$ SST | Wall Functions ($y^+ \approx 47$) | 24,124 | 0.4192 | 0.02796 | -0.00334 | 15.0 |
-| **Case D** | NACA 2412 | $k\text{-}\omega$ SST | Log-Law ($y^+ \approx 120$) | 123,504 | **0.6879** | **0.02131** | **-0.05944** | **32.3** |
-| **Case E** | NACA 2412 | Spalart-Allmaras | Unresolved Sublayer ($y^+ \approx 117$) | 123,504 | **0.7454** | **0.00368** | **-0.06385** | **202.6** |
+- **Converged Metrics ($t = 3677$):** $C_l = 0.6919$ (+48.5% vs. Case B), $C_d = 0.01107$ ($C_{d,p} = 0.00208$, $C_{d,v} = 0.00900$), $C_{m,\text{pitch}} = -0.05409$, $L/D = 62.5$
+- **Wall Resolution ($t = 3677$):** Min $y^+ = 2.39$, Mean $y^+ = 554.85$, Max $y^+ = 833.84$
