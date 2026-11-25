@@ -73,7 +73,7 @@ ax.annotate(
 # Flow regime annotation box
 ax.text(
     0.02, -0.105,
-    r"Test Conditions: $Re_c = 6 \times 10^6$, $\alpha = 4^\circ$, Incompressible RANS (WR \($y^+ < 1$) WF)",
+    r"Test Conditions: $Re_c = 6 \times 10^6$, $\alpha = 4^\circ$, Incompressible RANS (WR \(WR \($y^+ < 1$) WF) WF)",
     fontsize=8.5,
     bbox=dict(boxstyle="round,pad=0.3", facecolor="#f4f6f7", edgecolor="#bdc3c7"),
 )
